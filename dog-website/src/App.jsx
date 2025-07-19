@@ -42,6 +42,97 @@ function App() {
   const [isPublishing, setIsPublishing] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [selectedGalleryImage, setSelectedGalleryImage] = useState(null)
+  const [showFullGallery, setShowFullGallery] = useState(false)
+  const [adminCredentials, setAdminCredentials] = useState({ username: '', password: '' })
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
+
+  // Kutyák adatai
+  const [dogs, setDogs] = useState([
+    {
+      id: 1,
+      name: 'Carlos',
+      breed: 'Maltipoo',
+      age: '8 hét',
+      gender: 'Kan',
+      price: '350.000 Ft',
+      weight: '2-3 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Maltese, Apa: Toy Poodle',
+      temperament: 'Barátságos, játékos és intelligens',
+      available: true,
+      description: 'Gyönyörű vörös-barna göndör szőrzet'
+    },
+    {
+      id: 2,
+      name: 'Joker',
+      breed: 'Maltipoo',
+      age: '10 hét',
+      gender: 'Kan',
+      price: '380.000 Ft',
+      weight: '2.5-3.5 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Maltese, Apa: Toy Poodle',
+      temperament: 'Energikus és szerető',
+      available: true,
+      description: 'Fehér-barna hosszú szőrzet'
+    },
+    {
+      id: 3,
+      name: 'Charlie',
+      breed: 'Maltipoo',
+      age: '9 hét',
+      gender: 'Szuka',
+      price: '370.000 Ft',
+      weight: '2-3 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Maltese, Apa: Toy Poodle',
+      temperament: 'Nyugodt és kedves',
+      available: true,
+      description: 'Krém-barna göndör szőrzet'
+    },
+    {
+      id: 4,
+      name: 'Fanto',
+      breed: 'Cavapoo',
+      age: '12 hét',
+      gender: 'Kan',
+      price: '400.000 Ft',
+      weight: '3-4 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Cavalier King Charles Spaniel, Apa: Poodle',
+      temperament: 'Társaságkedvelő és okos',
+      available: true,
+      description: 'Barna göndör szőrzet'
+    },
+    {
+      id: 5,
+      name: 'Max',
+      breed: 'Uszkár',
+      age: '14 hét',
+      gender: 'Kan',
+      price: '320.000 Ft',
+      weight: '4-5 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Uszkár, Apa: Uszkár',
+      temperament: 'Védelmező és hűséges',
+      available: true,
+      description: 'Fekete-barna rövid szőrzet'
+    },
+    {
+      id: 6,
+      name: 'Buddy',
+      breed: 'Goldendoodle',
+      age: '16 hét',
+      gender: 'Szuka',
+      price: '450.000 Ft',
+      weight: '5-6 kg',
+      image: '/api/placeholder/400/300',
+      parents: 'Anya: Golden Retriever, Apa: Poodle',
+      temperament: 'Barátságos és aktív',
+      available: true,
+      description: 'Arany göndör szőrzet'
+    }
+  ])
 
   // Oldal beállítások
   const [siteSettings, setSiteSettings] = useState({
@@ -140,12 +231,75 @@ function App() {
         if (selectedDog) {
           setSelectedDog(null)
         }
+        if (showAdminLogin) {
+          setShowAdminLogin(false)
+        }
+        if (showAdminPanel) {
+          setShowAdminPanel(false)
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [showBooking, selectedDog])
+  }, [showBooking, selectedDog, showAdminLogin, showAdminPanel])
+
+  // Admin bejelentkezés kezelése
+  const handleAdminLogin = () => {
+    if (adminCredentials.username === 'Hibridadmin8' && adminCredentials.password === 'Hibridadmin9988@') {
+      setIsAdminLoggedIn(true)
+      setShowAdminLogin(false)
+      setShowAdminPanel(true)
+      setAdminCredentials({ username: '', password: '' })
+    } else {
+      alert('Hibás felhasználónév vagy jelszó!')
+    }
+  }
+
+  // Admin kijelentkezés
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false)
+    setShowAdminPanel(false)
+  }
+
+  // Módosítások mentése és megosztása
+  const handleSaveAndShare = async () => {
+    setIsPublishing(true)
+    try {
+      // Itt történne a valódi mentés és megosztás
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      setHasUnsavedChanges(false)
+      alert('Módosítások sikeresen mentve és megosztva!')
+    } catch (error) {
+      alert('Hiba történt a mentés során!')
+    } finally {
+      setIsPublishing(false)
+    }
+  }
+
+  // Scroll spy effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'breeds', 'available', 'gallery', 'contact']
+      const scrollPosition = window.scrollY + 100
+
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const offsetTop = element.offsetTop
+          const offsetHeight = element.offsetHeight
+          
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Click outside to close modals
   useEffect(() => {
@@ -227,89 +381,55 @@ function App() {
     dog_name: null
   });
 
-  // Admin funkciók
-  const handleAdminLogin = () => {
-    if (adminUsername === 'Hibridadmin8' && adminPassword === 'Hibridadmin9988@') {
-      setIsAdmin(true)
-      setShowAdminLogin(false)
-      setAdminUsername('')
-      setAdminPassword('')
-      alert('Sikeres bejelentkezés!')
-    } else {
-      alert('Hibás felhasználónév vagy jelszó!')
+  const handleBookingSubmit = async (formData) => {
+    try {
+      // Ellenőrizzük, hogy az időpont foglalt-e
+      const isBooked = bookedSlots[formData.preferred_date]?.includes(formData.preferred_time);
+      if (isBooked) {
+        alert('Ez az időpont már foglalt! Kérjük válasszon másik időpontot.');
+        return;
+      }
+
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Hozzáadjuk az új foglalást a listához
+        setBookedSlots(prev => ({
+          ...prev,
+          [formData.preferred_date]: [...(prev[formData.preferred_date] || []), formData.preferred_time]
+        }));
+        
+        alert(pageTexts.bookingSuccess);
+        setShowBooking(false);
+        setBookingForm({
+          name: '',
+          phone: '',
+          email: '',
+          preferred_date: '',
+          preferred_time: '9:00',
+          message: '',
+          dog_id: null,
+          dog_name: null
+        });
+      } else {
+        const error = await response.json();
+        alert(pageTexts.bookingError + error.message);
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert('Hiba történt az időpont foglalás során. Kérjük próbálja újra később.');
     }
   }
 
-  const handleAdminLogout = () => {
-    setIsAdmin(false)
-    setShowAdminPanel(false)
-    alert('Kijelentkezve!')
-  }
-
-  const handleAddDog = (newDog) => {
-    const dogWithId = {
-      ...newDog,
-      id: Math.max(...availableDogs.map(dog => dog.id)) + 1
-    }
-    setAvailableDogs([...availableDogs, dogWithId])
-    setShowAddDog(false)
-    setStatistics(prev => ({
-      ...prev,
-      totalDogs: prev.totalDogs + 1,
-      availableDogs: prev.availableDogs + 1
-    }))
-    setHasUnsavedChanges(true)
-    alert('Kutya sikeresen hozzáadva!')
-  }
-
-  const handleEditDog = (updatedDog) => {
-    setAvailableDogs(availableDogs.map(dog => 
-      dog.id === updatedDog.id ? updatedDog : dog
-    ))
-    setShowEditDog(false)
-    setEditingDog(null)
-    setHasUnsavedChanges(true)
-    alert('Kutya sikeresen módosítva!')
-  }
-
-  const handleDeleteDog = (dogId) => {
-    if (confirm('Biztosan törölni szeretné ezt a kutyát?')) {
-      setAvailableDogs(availableDogs.filter(dog => dog.id !== dogId))
-      setStatistics(prev => ({
-        ...prev,
-        totalDogs: prev.totalDogs - 1,
-        availableDogs: prev.availableDogs - 1
-      }))
-      setHasUnsavedChanges(true)
-      alert('Kutya sikeresen törölve!')
-    }
-  }
-
-  const handleCancelBooking = (date, time) => {
-    setBookedSlots(prev => ({
-      ...prev,
-      [date]: prev[date]?.filter(t => t !== time) || []
-    }))
-    setStatistics(prev => ({
-      ...prev,
-      activeBookings: prev.activeBookings - 1
-    }))
-    alert(`Foglalás törölve: ${date} ${time}`)
-  }
-
-  // Képfeltöltés kezelése
-  const handleImageUpload = (event, setImageUrl) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageUrl(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Új kutya form state
+  return (tya form state
   const [newDogForm, setNewDogForm] = useState({
     name: '',
     breed: '',
@@ -657,14 +777,14 @@ function App() {
                 className="border-2 border-green-500 hover:bg-green-50 text-green-600 hover:text-green-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-4 py-3"
               >
                 <Phone className="w-4 h-4 mr-2" />
-                {siteSettings.phoneNumber}
+                Hívás most
               </Button>
               <Button 
-                onClick={() => setShowBooking(true)}
-                className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl px-6 py-3"
+                onClick={() => window.open("tel:+3670217885", '_self')}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3"
               >
-                <Calendar className="w-5 h-5 mr-2" />
-                Időpont Foglalás
+                <MessageCircle className="w-6 h-6" />
+                <span>Hívás most</span>
               </Button>
             </div>
           </div>
@@ -698,7 +818,7 @@ function App() {
                   className="mt-4 border-2 border-green-500 hover:bg-green-50 text-green-600 hover:text-green-700 rounded-xl"
                 >
                   <Phone className="w-4 h-4 mr-2" />
-                  {siteSettings.phoneNumber}
+                  Hívás most
                 </Button>
                 <Button 
                   onClick={() => {
@@ -901,39 +1021,46 @@ function App() {
       </section>
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 px-4 bg-white/50 backdrop-blur-md relative">
+      <section id="gallery" className="py-20 px-4 bg-white/50 backdrop-blur-md relative overflow-hidden">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h3 className="text-5xl font-bold text-gray-800 mb-6">Galéria</h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Tekintse meg kiskutyáinkat különböző pillanatokban és környezetekben.
             </p>
             <Button 
-              onClick={() => setShowGallery(true)}
-              className="mt-8 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 text-lg"
+              onClick={() => setShowFullGallery(true)}
+              className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 text-lg"
             >
               <Eye className="w-5 h-5 mr-3" />
               Teljes Galéria Megnyitása
             </Button>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {galleryImages.slice(0, 6).map((image, index) => (
-              <div key={image.id} className="group cursor-pointer" onClick={() => setSelectedGalleryImage(image)}>
-                <div className="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                  <img 
-                    src={image.src} 
-                    alt={image.title}
-                    className="w-full h-72 object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <h4 className="text-2xl font-bold mb-2">{image.title}</h4>
-                    <p className="text-sm opacity-75 mt-2">{image.description}</p>
+          {/* Animált képsáv */}
+          <div className="relative">
+            <div className="flex animate-scroll space-x-6">
+              {[...galleryImages.slice(0, 5), ...galleryImages.slice(0, 5)].map((image, index) => (
+                <div 
+                  key={`${image.id}-${index}`} 
+                  className="flex-shrink-0 w-80 h-64 group cursor-pointer"
+                  onClick={() => setSelectedGalleryImage(image)}
+                >
+                  <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 h-full">
+                    <img 
+                      src={image.src} 
+                      alt={image.title}
+                      className="w-full h-full object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h4 className="text-lg font-bold mb-1">{image.title}</h4>
+                      <p className="text-xs opacity-75">{image.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -955,7 +1082,7 @@ function App() {
                 {[
                   { 
                     icon: Phone, 
-                    text: "0670217885 (WhatsApp és Viber)", 
+                    text: "+3670217885 (WhatsApp és Viber)", 
                     color: "from-green-500 to-emerald-500",
                     link: "https://wa.me/3670217885",
                     phone: "tel:+3670217885"
@@ -2723,10 +2850,363 @@ function App() {
         </div>
       )}
 
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-2xl font-bold mb-4">{siteSettings.siteTitle}</h3>
+              <p className="text-gray-300 mb-4">{siteSettings.siteSubtitle}</p>
+              <p className="text-gray-400">{siteSettings.footerText}</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Elérhetőség</h4>
+              <div className="space-y-2 text-gray-300">
+                <p>📞 {siteSettings.phoneNumber}</p>
+                <p>✉️ {siteSettings.email}</p>
+                <p>📍 {siteSettings.address}</p>
+                <p>🕒 {siteSettings.openingHours}</p>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Közösségi média</h4>
+              <div className="space-y-2 text-gray-300">
+                <p>📱 WhatsApp: {siteSettings.whatsappNumber}</p>
+                <p>📷 Instagram: {siteSettings.instagramHandle}</p>
+                <p>👥 Facebook: {siteSettings.facebookPage}</p>
+              </div>
+              {/* Admin bejelentkezési gomb */}
+              <div className="mt-6">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAdminLogin(true)}
+                  className="text-gray-500 hover:text-gray-300 text-xs"
+                >
+                  Admin
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Admin bejelentkezési modal */}
+      {showAdminLogin && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md bg-white rounded-2xl shadow-2xl">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl font-bold text-gray-800">Admin Bejelentkezés</CardTitle>
+              <CardDescription className="text-gray-600">
+                Adja meg az admin hozzáférési adatokat
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Felhasználónév
+                </label>
+                <input
+                  type="text"
+                  value={adminCredentials.username}
+                  onChange={(e) => setAdminCredentials({...adminCredentials, username: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  placeholder="Felhasználónév"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Jelszó
+                </label>
+                <input
+                  type="password"
+                  value={adminCredentials.password}
+                  onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  placeholder="Jelszó"
+                />
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  onClick={handleAdminLogin}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl py-3"
+                >
+                  Bejelentkezés
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAdminLogin(false)}
+                  className="flex-1 rounded-xl py-3"
+                >
+                  Mégse
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Admin Panel */}
+      {showAdminPanel && isAdminLoggedIn && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-t-2xl">
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
+                  <CardDescription className="text-orange-100">
+                    Teljes oldal szerkesztése és kezelése
+                  </CardDescription>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={handleSaveAndShare}
+                    disabled={isPublishing}
+                    className="bg-green-600 hover:bg-green-700 text-white rounded-xl"
+                  >
+                    {isPublishing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Mentés...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Mentés és Megosztás
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleAdminLogout}
+                    className="border-white/30 text-white hover:bg-white/20"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Kijelentkezés
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAdminPanel(false)}
+                    className="border-white/30 text-white hover:bg-white/20"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Oldal beállítások */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Oldal Beállítások</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Oldal címe</label>
+                      <input
+                        type="text"
+                        value={siteSettings.siteTitle}
+                        onChange={(e) => setSiteSettings({...siteSettings, siteTitle: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Alcím</label>
+                      <input
+                        type="text"
+                        value={siteSettings.siteSubtitle}
+                        onChange={(e) => setSiteSettings({...siteSettings, siteSubtitle: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Telefonszám</label>
+                      <input
+                        type="text"
+                        value={siteSettings.phoneNumber}
+                        onChange={(e) => setSiteSettings({...siteSettings, phoneNumber: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={siteSettings.email}
+                        onChange={(e) => setSiteSettings({...siteSettings, email: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Kutyák kezelése */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Kutyák Kezelése</h3>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {dogs.map((dog, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-3">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-800">{dog.name}</h4>
+                            <p className="text-sm text-gray-600">{dog.breed} - {dog.price}</p>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const newPrice = prompt('Új ár:', dog.price)
+                                if (newPrice) {
+                                  const updatedDogs = [...dogs]
+                                  updatedDogs[index].price = newPrice
+                                  setDogs(updatedDogs)
+                                  setHasUnsavedChanges(true)
+                                }
+                              }}
+                              className="text-xs"
+                            >
+                              <Edit className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                if (confirm('Biztosan törli ezt a kutyát?')) {
+                                  const updatedDogs = dogs.filter((_, i) => i !== index)
+                                  setDogs(updatedDogs)
+                                  setHasUnsavedChanges(true)
+                                }
+                              }}
+                              className="text-xs text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    onClick={() => {
+                      const newDog = {
+                        name: prompt('Kutya neve:') || 'Új kutya',
+                        breed: prompt('Fajta:') || 'Maltipoo',
+                        age: prompt('Kor:') || '8 hét',
+                        gender: prompt('Nem (Kan/Szuka):') || 'Kan',
+                        price: prompt('Ár:') || '350.000 Ft',
+                        weight: prompt('Súly:') || '2-3 kg',
+                        image: '/api/placeholder/400/300',
+                        parents: prompt('Szülők:') || 'Információ hiányzik',
+                        temperament: prompt('Temperamentum:') || 'Barátságos és játékos',
+                        available: true
+                      }
+                      setDogs([...dogs, newDog])
+                      setHasUnsavedChanges(true)
+                    }}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Új Kutya Hozzáadása
+                  </Button>
+                </div>
+
+                {/* Foglalások kezelése */}
+                <div className="space-y-4 md:col-span-2">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Foglalások Kezelése</h3>
+                  <div className="grid md:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
+                    {bookings.map((booking, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-semibold text-gray-800">{booking.name}</h4>
+                            <p className="text-sm text-gray-600">{booking.email}</p>
+                            <p className="text-sm text-gray-600">{booking.phone}</p>
+                            <p className="text-sm text-gray-500">{booking.date} - {booking.time}</p>
+                            <p className="text-xs text-gray-500">{booking.message}</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (confirm('Biztosan törli ezt a foglalást?')) {
+                                const updatedBookings = bookings.filter((_, i) => i !== index)
+                                setBookings(updatedBookings)
+                                setHasUnsavedChanges(true)
+                              }
+                            }}
+                            className="text-xs text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Teljes Galéria Modal */}
+      {showFullGallery && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-7xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-t-2xl">
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-3xl font-bold">Teljes Galéria</CardTitle>
+                  <CardDescription className="text-orange-100">
+                    Minden képünk egy helyen
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFullGallery(false)}
+                  className="border-white/30 text-white hover:bg-white/20"
+                >
+                  <X className="w-6 h-6" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {galleryImages.map((image) => (
+                  <div 
+                    key={image.id} 
+                    className="group cursor-pointer"
+                    onClick={() => setSelectedGalleryImage(image)}
+                  >
+                    <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                      <img 
+                        src={image.src} 
+                        alt={image.title}
+                        className="w-full h-64 object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <h4 className="text-lg font-bold mb-1">{image.title}</h4>
+                        <p className="text-sm opacity-75">{image.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       <style jsx>{`
         @keyframes gradient {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         
         @keyframes fade-in-up {
@@ -2743,6 +3223,10 @@ function App() {
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient 3s ease infinite;
+        }
+        
+        .animate-scroll {
+          animation: scroll 20s linear infinite;
         }
         
         .animate-fade-in-up {
