@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Button } from './components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
-import { Phone, Mail, Clock, Instagram, Eye, X, Save, LogOut, Plus, Edit, Trash2, Loader2 } from 'lucide-react'
+import './index.css'
 
 function App() {
-  // State management
   const [activeSection, setActiveSection] = useState('home')
   const [selectedDog, setSelectedDog] = useState(null)
   const [showBooking, setShowBooking] = useState(false)
@@ -15,123 +12,143 @@ function App() {
   const [showAdminPanel, setShowAdminPanel] = useState(false)
   const [adminCredentials, setAdminCredentials] = useState({ username: '', password: '' })
   const [isPublishing, setIsPublishing] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // Site settings
   const [siteSettings, setSiteSettings] = useState({
-    siteTitle: 'Hibrid Shopp',
-    siteSubtitle: 'Prémium Kutyatenyésztés',
+    siteTitle: 'HibridShopp',
+    siteSubtitle: 'Premium Dog Breeding',
     phoneNumber: '+3670217885',
     email: 'shoppdogg583@gmail.com',
-    address: 'Budapest, Magyarország',
-    openingHours: 'Hétfő-Péntek: 8:00 - 22:00',
+    address: 'Budapest, Hungary',
+    openingHours: 'Monday-Friday: 8:00 - 22:00',
     whatsappNumber: '+3670217885',
     instagramHandle: '@hibridshopp',
     facebookPage: 'hibridshopp',
-    footerText: '© 2024 Hibrid Shopp. Minden jog fenntartva.'
+    footerText: '© 2024 HibridShopp. All rights reserved.'
   })
 
-  // Dogs data
+  // Dogs data with real information from reference site
   const [dogs, setDogs] = useState([
     {
       id: 1,
       name: 'Carlos',
       breed: 'Maltipoo',
-      age: '8 hét',
-      gender: 'Kan',
-      price: '350.000 Ft',
+      age: '8 weeks',
+      gender: 'Male',
+      price: '350,000 Ft',
       weight: '2-3 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Maltese, Apa: Toy Poodle',
-      temperament: 'Barátságos, játékos és intelligens',
+      image: '/src/assets/gallery/maltipoo_puppy_1.jpeg',
+      parents: 'Mother: Maltese, Father: Toy Poodle',
+      temperament: 'Friendly, playful and intelligent',
       available: true,
-      description: 'Gyönyörű vörös-barna göndör szőrzet'
+      description: 'Beautiful red-brown curly coat'
     },
     {
       id: 2,
       name: 'Joker',
       breed: 'Maltipoo',
-      age: '10 hét',
-      gender: 'Kan',
-      price: '380.000 Ft',
+      age: '10 weeks',
+      gender: 'Male',
+      price: '380,000 Ft',
       weight: '2.5-3.5 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Maltese, Apa: Toy Poodle',
-      temperament: 'Energikus és szerető',
+      image: '/src/assets/gallery/maltipoo_puppy_2.jpeg',
+      parents: 'Mother: Maltese, Father: Toy Poodle',
+      temperament: 'Energetic, loving and smart',
       available: true,
-      description: 'Fehér-barna hosszú szőrzet'
+      description: 'White-brown long coat'
     },
     {
       id: 3,
       name: 'Charlie',
       breed: 'Maltipoo',
-      age: '9 hét',
-      gender: 'Szuka',
-      price: '370.000 Ft',
+      age: '9 weeks',
+      gender: 'Female',
+      price: '370,000 Ft',
       weight: '2-3 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Maltese, Apa: Toy Poodle',
-      temperament: 'Nyugodt és kedves',
+      image: '/src/assets/gallery/maltipoo_puppy_3.jpeg',
+      parents: 'Mother: Maltese, Father: Toy Poodle',
+      temperament: 'Gentle, affectionate and calm',
       available: true,
-      description: 'Krém-barna göndör szőrzet'
+      description: 'Cream-brown curly coat'
     },
     {
       id: 4,
       name: 'Fanto',
       breed: 'Cavapoo',
-      age: '12 hét',
-      gender: 'Kan',
-      price: '400.000 Ft',
+      age: '12 weeks',
+      gender: 'Male',
+      price: '400,000 Ft',
       weight: '3-4 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Cavalier King Charles Spaniel, Apa: Poodle',
-      temperament: 'Társaságkedvelő és okos',
+      image: '/src/assets/gallery/cavapoo_adult_1.jpeg',
+      parents: 'Mother: Cavalier King Charles, Father: Poodle',
+      temperament: 'Social, gentle and playful',
       available: true,
-      description: 'Barna göndör szőrzet'
+      description: 'Brown curly coat'
     },
     {
       id: 5,
       name: 'Max',
-      breed: 'Uszkár',
-      age: '14 hét',
-      gender: 'Kan',
-      price: '320.000 Ft',
+      breed: 'Yorkipoo',
+      age: '14 weeks',
+      gender: 'Male',
+      price: '320,000 Ft',
       weight: '4-5 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Uszkár, Apa: Uszkár',
-      temperament: 'Védelmező és hűséges',
+      image: '/src/assets/gallery/maltipoo_adult_1.jpeg',
+      parents: 'Mother: Yorkshire Terrier, Father: Poodle',
+      temperament: 'Alert, confident and loyal',
       available: true,
-      description: 'Fekete-barna rövid szőrzet'
+      description: 'Black-brown silky coat'
     },
     {
       id: 6,
       name: 'Buddy',
       breed: 'Goldendoodle',
-      age: '16 hét',
-      gender: 'Szuka',
-      price: '450.000 Ft',
+      age: '16 weeks',
+      gender: 'Female',
+      price: '450,000 Ft',
       weight: '5-6 kg',
-      image: '/api/placeholder/400/300',
-      parents: 'Anya: Golden Retriever, Apa: Poodle',
-      temperament: 'Barátságos és aktív',
+      image: '/src/assets/gallery/poodle_adult_1.jpeg',
+      parents: 'Mother: Golden Retriever, Father: Poodle',
+      temperament: 'Friendly, intelligent and active',
       available: true,
-      description: 'Arany göndör szőrzet'
+      description: 'Golden curly coat'
     }
   ])
 
   // Gallery images
-  const [galleryImages] = useState([
-    { id: 1, src: '/api/placeholder/400/300', title: 'Carlos - Maltipoo', description: 'Gyönyörű vörös-barna göndör szőrzet' },
-    { id: 2, src: '/api/placeholder/400/300', title: 'Joker - Maltipoo', description: 'Fehér-barna hosszú szőrzet' },
-    { id: 3, src: '/api/placeholder/400/300', title: 'Charlie - Maltipoo', description: 'Krém-barna göndör szőrzet' },
-    { id: 4, src: '/api/placeholder/400/300', title: 'Fanto - Cavapoo', description: 'Barna göndör szőrzet' },
-    { id: 5, src: '/api/placeholder/400/300', title: 'Max - Uszkár', description: 'Fekete-barna rövid szőrzet' }
-  ])
-
-  // Bookings
-  const [bookings, setBookings] = useState([
-    { id: 1, name: 'Kovács János', email: 'kovacs@email.com', phone: '+36301234567', date: '2024-01-15', time: '10:00', message: 'Érdekel a Carlos' },
-    { id: 2, name: 'Nagy Anna', email: 'anna@email.com', phone: '+36301234568', date: '2024-01-16', time: '14:00', message: 'Szeretném megnézni a Joker-t' }
-  ])
+  const galleryImages = [
+    {
+      id: 1,
+      src: '/src/assets/gallery/maltipoo_puppy_1.jpeg',
+      title: 'Carlos - Maltipoo',
+      description: 'Beautiful red-brown curly coat'
+    },
+    {
+      id: 2,
+      src: '/src/assets/gallery/maltipoo_puppy_2.jpeg',
+      title: 'Joker - Maltipoo',
+      description: 'White-brown long coat'
+    },
+    {
+      id: 3,
+      src: '/src/assets/gallery/maltipoo_puppy_3.jpeg',
+      title: 'Charlie - Maltipoo',
+      description: 'Cream-brown curly coat'
+    },
+    {
+      id: 4,
+      src: '/src/assets/gallery/cavapoo_adult_1.jpeg',
+      title: 'Fanto - Cavapoo',
+      description: 'Brown curly coat'
+    },
+    {
+      id: 5,
+      src: '/src/assets/gallery/maltipoo_adult_1.jpeg',
+      title: 'Max - Yorkipoo',
+      description: 'Black-brown silky coat'
+    }
+  ]
 
   // Admin functions
   const handleAdminLogin = () => {
@@ -139,114 +156,191 @@ function App() {
       setIsAdminLoggedIn(true)
       setShowAdminLogin(false)
       setShowAdminPanel(true)
-      setAdminCredentials({ username: '', password: '' })
     } else {
-      alert('Hibás felhasználónév vagy jelszó!')
+      alert('Invalid credentials!')
     }
   }
 
   const handleAdminLogout = () => {
     setIsAdminLoggedIn(false)
     setShowAdminPanel(false)
+    setAdminCredentials({ username: '', password: '' })
   }
 
-  const handleSaveAndShare = async () => {
+  const handleSaveAndPublish = () => {
     setIsPublishing(true)
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      alert('Módosítások sikeresen mentve és megosztva!')
-    } catch (error) {
-      alert('Hiba történt a mentés során!')
-    } finally {
+    setTimeout(() => {
       setIsPublishing(false)
-    }
+      alert('Changes saved and published successfully!')
+    }, 2000)
   }
+
+  // Gallery carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === galleryImages.length - 1 ? 0 : prevIndex + 1
+      )
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [galleryImages.length])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="App">
       {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-40 border-b border-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">🐕</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">{siteSettings.siteTitle}</h1>
-                <p className="text-sm text-gray-600">{siteSettings.siteSubtitle}</p>
-              </div>
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(10px)',
+        zIndex: 1000,
+        padding: '1rem 0',
+        borderBottom: '1px solid var(--border-color)',
+        boxShadow: '0 2px 20px rgba(0, 0, 0, 0.1)'
+      }}>
+        <div className="container flex items-center justify-between">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'var(--gradient-primary)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '1.2rem'
+            }}>
+              🐕
             </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {[
-                { id: 'home', label: 'Főoldal' },
-                { id: 'breeds', label: 'Fajták' },
-                { id: 'available', label: 'Eladó Kutyák' },
-                { id: 'gallery', label: 'Galéria' },
-                { id: 'contact', label: 'Kapcsolat' }
-              ].map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className={`text-lg font-medium transition-colors duration-300 hover:text-orange-600 ${
-                    activeSection === item.id ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-700'
-                  }`}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="hidden lg:flex items-center space-x-4">
-              <Button 
-                variant="outline"
-                onClick={() => window.open(`tel:${siteSettings.phoneNumber}`, '_self')}
-                className="border-2 border-green-500 hover:bg-green-50 text-green-600 hover:text-green-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-4 py-3"
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                Hívás most
-              </Button>
-              <Button 
-                onClick={() => window.open(`tel:${siteSettings.phoneNumber}`, '_self')}
-                className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl px-6 py-3"
-              >
-                Időpont Foglalás
-              </Button>
-            </div>
+            <h1 style={{ 
+              fontSize: '1.5rem', 
+              fontWeight: '800',
+              background: 'var(--gradient-primary)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              margin: 0
+            }}>
+              {siteSettings.siteTitle}
+            </h1>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            <a href="#home" style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: '500' }}>Home</a>
+            <a href="#breeds" style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: '500' }}>Breeds</a>
+            <a href="#dogs" style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: '500' }}>Available Dogs</a>
+            <a href="#gallery" style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: '500' }}>Gallery</a>
+            <a href="#contact" style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: '500' }}>Contact</a>
+            <a href={`tel:${siteSettings.phoneNumber}`} className="btn btn-primary">
+              📞 Call Now
+            </a>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="py-20 px-4 relative overflow-hidden">
-        <div className="container mx-auto text-center">
-          <h2 className="text-6xl font-bold text-gray-800 mb-6 animate-fade-in-up">
-            Találd meg a tökéletes társadat
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12 animate-fade-in-up">
-            Professzionális kutyatenyésztés szeretettel és gondossággal. Maltipoo, Uszkár, Cavapoo és Goldendoodle fajtákra specializálódtunk.
-          </p>
+      <section id="home" className="section-hero">
+        <div className="container text-center">
+          <div className="animate-fade-in-up">
+            <h1 style={{ fontSize: '4rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+              Find Your Perfect Companion
+            </h1>
+            <p style={{ 
+              fontSize: '1.3rem', 
+              marginBottom: '2rem', 
+              color: 'rgba(255,255,255,0.9)',
+              maxWidth: '600px',
+              margin: '0 auto 2rem'
+            }}>
+              Professional dog breeding with love and care. We specialize in Maltipoo, Yorkipoo, Cavapoo and Goldendoodle breeds.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button 
+                className="btn btn-secondary"
+                onClick={() => setShowBooking(true)}
+                style={{ fontSize: '1.1rem', padding: '1rem 2rem' }}
+              >
+                📅 Book Appointment
+              </button>
+              <a href="#dogs" className="btn btn-outline" style={{ 
+                fontSize: '1.1rem', 
+                padding: '1rem 2rem',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                borderColor: 'white',
+                color: 'white'
+              }}>
+                🐕 View Available Dogs
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Dogs Preview */}
+      <section style={{ padding: '4rem 0', background: 'var(--background-gray)' }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2 style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>Featured Puppies</h2>
+            <p style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+              Meet some of our adorable puppies looking for their forever homes
+            </p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-3" style={{ gap: '2rem' }}>
             {dogs.slice(0, 3).map((dog, index) => (
-              <div key={dog.id} className="group cursor-pointer" onClick={() => setSelectedDog(dog)}>
-                <div className="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                  <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
-                    {dog.price}
-                  </div>
+              <div key={dog.id} className="card animate-fade-in-up" style={{ 
+                animationDelay: `${index * 0.2}s`,
+                textAlign: 'center',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  width: '100%',
+                  height: '250px',
+                  borderRadius: 'var(--radius-lg)',
+                  overflow: 'hidden',
+                  marginBottom: '1rem',
+                  position: 'relative'
+                }}>
                   <img 
                     src={dog.image} 
                     alt={dog.name}
-                    className="w-full h-80 object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.3s ease'
+                    }}
+                    onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-                    <h3 className="text-2xl font-bold mb-2">{dog.name}</h3>
-                    <p className="text-lg opacity-90">{dog.breed}</p>
+                  <div style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem',
+                    background: 'var(--gradient-primary)',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: 'var(--radius-full)',
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem'
+                  }}>
+                    {dog.price}
                   </div>
                 </div>
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>{dog.name}</h3>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                  {dog.breed} • {dog.age}
+                </p>
+                <button 
+                  className="btn btn-outline"
+                  onClick={() => setSelectedDog(dog)}
+                  style={{ width: '100%' }}
+                >
+                  View Details
+                </button>
               </div>
             ))}
           </div>
@@ -254,527 +348,565 @@ function App() {
       </section>
 
       {/* Available Dogs Section */}
-      <section id="available" className="py-20 px-4 bg-white/50 backdrop-blur-md">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-5xl font-bold text-gray-800 mb-6">Eladó Kutyáink</h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Minden kiskutyánk szeretettel nevelkedik családi környezetben, biztosítva a legjobb szocializációt.
+      <section id="dogs" className="section">
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2>Available Puppies</h2>
+            <p style={{ fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto' }}>
+              All our puppies are raised with love in a family environment, ensuring the best socialization.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {dogs.map((dog) => (
-              <Card key={dog.id} className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white/80 backdrop-blur-md border border-orange-100 rounded-3xl overflow-hidden">
-                <div className="relative">
-                  <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
-                    {dog.price}
-                  </div>
+          <div className="grid grid-2" style={{ gap: '2rem' }}>
+            {dogs.map((dog, index) => (
+              <div key={dog.id} className="card" style={{ 
+                display: 'flex',
+                gap: '1.5rem',
+                alignItems: 'center',
+                padding: '1.5rem'
+              }}>
+                <div style={{
+                  width: '150px',
+                  height: '150px',
+                  borderRadius: 'var(--radius-lg)',
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                  position: 'relative'
+                }}>
                   <img 
                     src={dog.image} 
                     alt={dog.name}
-                    className="w-full h-64 object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
                   />
+                  {dog.available && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      left: '0.5rem',
+                      background: '#10b981',
+                      color: 'white',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold'
+                    }}>
+                      Available
+                    </div>
+                  )}
                 </div>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h4 className="text-2xl font-bold text-gray-800 mb-1">{dog.name}</h4>
-                      <p className="text-lg text-gray-600">{dog.breed} • {dog.age}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm text-gray-500">{dog.gender}</span>
-                    </div>
+                
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
+                    <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>{dog.name}</h3>
+                    <span style={{
+                      background: 'var(--gradient-primary)',
+                      color: 'white',
+                      padding: '0.5rem 1rem',
+                      borderRadius: 'var(--radius-full)',
+                      fontWeight: 'bold'
+                    }}>
+                      {dog.price}
+                    </span>
                   </div>
                   
-                  <p className="text-gray-600 mb-4">{dog.description}</p>
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                    <strong>{dog.breed}</strong> • {dog.age} • {dog.gender}
+                  </p>
                   
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">Súly: {dog.weight}</span>
-                    <Button 
-                      onClick={() => setSelectedDog(dog)}
-                      className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl"
-                    >
-                      Részletek
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                    {dog.description}
+                  </p>
+                  
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                    <strong>Weight:</strong> {dog.weight}
+                  </p>
+                  
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => setSelectedDog(dog)}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 px-4 bg-white/50 backdrop-blur-md relative overflow-hidden">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-5xl font-bold text-gray-800 mb-6">Galéria</h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Tekintse meg kiskutyáinkat különböző pillanatokban és környezetekben.
+      <section id="gallery" className="section" style={{ background: 'var(--background-gray)' }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2>Gallery</h2>
+            <p style={{ fontSize: '1.1rem' }}>
+              See our puppies in different moments and environments.
             </p>
-            <Button 
-              onClick={() => setShowFullGallery(true)}
-              className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 text-lg"
-            >
-              <Eye className="w-5 h-5 mr-3" />
-              Teljes Galéria Megnyitása
-            </Button>
           </div>
           
-          {/* Animated image carousel */}
-          <div className="relative">
-            <div className="flex animate-scroll space-x-6">
-              {[...galleryImages, ...galleryImages].map((image, index) => (
-                <div 
-                  key={`${image.id}-${index}`} 
-                  className="flex-shrink-0 w-80 h-64 group cursor-pointer"
-                  onClick={() => setSelectedGalleryImage(image)}
-                >
-                  <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 h-full">
-                    <img 
-                      src={image.src} 
-                      alt={image.title}
-                      className="w-full h-full object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <h4 className="text-lg font-bold mb-1">{image.title}</h4>
-                      <p className="text-xs opacity-75">{image.description}</p>
-                    </div>
-                  </div>
+          {/* Animated Gallery Carousel */}
+          <div style={{
+            position: 'relative',
+            height: '300px',
+            borderRadius: 'var(--radius-xl)',
+            overflow: 'hidden',
+            marginBottom: '2rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+          }}>
+            {galleryImages.map((image, index) => (
+              <div
+                key={image.id}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  opacity: index === currentImageIndex ? 1 : 0,
+                  transition: 'opacity 1s ease-in-out',
+                  backgroundImage: `url(${image.src})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  display: 'flex',
+                  alignItems: 'end',
+                  padding: '2rem'
+                }}
+              >
+                <div style={{
+                  background: 'rgba(0,0,0,0.7)',
+                  color: 'white',
+                  padding: '1rem',
+                  borderRadius: 'var(--radius-lg)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <h4 style={{ margin: '0 0 0.5rem 0', color: 'white' }}>{image.title}</h4>
+                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.9)' }}>{image.description}</p>
                 </div>
+              </div>
+            ))}
+            
+            {/* Gallery indicators */}
+            <div style={{
+              position: 'absolute',
+              bottom: '1rem',
+              right: '1rem',
+              display: 'flex',
+              gap: '0.5rem'
+            }}>
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: index === currentImageIndex ? 'white' : 'rgba(255,255,255,0.5)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
               ))}
             </div>
+          </div>
+          
+          <div className="text-center">
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setShowFullGallery(true)}
+            >
+              🖼️ View Full Gallery
+            </button>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 relative">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-5xl font-bold text-gray-800 mb-6">Kapcsolat</h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Vegye fel velünk a kapcsolatot, és találja meg álmai kutyusát!
+      <section id="contact" className="section">
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2>Contact Us</h2>
+            <p style={{ fontSize: '1.1rem' }}>
+              Get in touch with us and find your dream puppy!
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <h4 className="text-3xl font-semibold text-gray-800 mb-8">Elérhetőségek</h4>
-              <div className="space-y-6">
-                {[
-                  { 
-                    icon: Phone, 
-                    text: `${siteSettings.phoneNumber} (WhatsApp és Viber)`, 
-                    color: "from-green-500 to-emerald-500",
-                    link: `https://wa.me/${siteSettings.whatsappNumber.replace('+', '')}`,
-                    phone: `tel:${siteSettings.phoneNumber}`
-                  },
-                  { icon: Mail, text: siteSettings.email, color: "from-blue-500 to-cyan-500", link: `mailto:${siteSettings.email}` },
-                  { icon: Clock, text: siteSettings.openingHours, color: "from-purple-500 to-pink-500" },
-                  { icon: Instagram, text: siteSettings.instagramHandle, color: "from-pink-500 to-rose-500", link: `https://www.instagram.com/${siteSettings.instagramHandle.replace('@', '')}` }
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-4 group">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${item.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110`}>
-                      <item.icon className="w-7 h-7 text-white" />
-                    </div>
-                    {item.link ? (
-                      <a 
-                        href={item.phone || item.link} 
-                        className="text-gray-700 text-lg font-medium hover:text-orange-600 transition-colors duration-300"
-                        target={item.phone ? '_self' : '_blank'}
-                        rel={item.phone ? '' : 'noopener noreferrer'}
-                      >
-                        {item.text}
-                      </a>
-                    ) : (
-                      <span className="text-gray-700 text-lg font-medium">{item.text}</span>
-                    )}
+          <div className="grid grid-2" style={{ gap: '3rem', alignItems: 'center' }}>
+            <div>
+              <h3 style={{ marginBottom: '2rem' }}>Contact Information</h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    background: 'var(--gradient-primary)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    📞
                   </div>
-                ))}
-
-                {/* Call Now button */}
-                <div className="mt-8">
-                  <a 
-                    href={`tel:${siteSettings.phoneNumber}`}
-                    className="inline-flex items-center space-x-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                  >
-                    <Phone className="w-6 h-6" />
-                    <span className="text-lg font-semibold">Hívás Most!</span>
-                  </a>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--text-primary)' }}>Phone & WhatsApp</p>
+                    <a href={`tel:${siteSettings.phoneNumber}`} style={{ 
+                      color: 'var(--primary-color)', 
+                      textDecoration: 'none',
+                      fontSize: '1.1rem',
+                      fontWeight: '500'
+                    }}>
+                      {siteSettings.phoneNumber}
+                    </a>
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    background: 'var(--gradient-secondary)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    ✉️
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--text-primary)' }}>Email</p>
+                    <a href={`mailto:${siteSettings.email}`} style={{ 
+                      color: 'var(--secondary-color)', 
+                      textDecoration: 'none',
+                      fontSize: '1.1rem'
+                    }}>
+                      {siteSettings.email}
+                    </a>
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    background: 'var(--gradient-primary)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    🕒
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--text-primary)' }}>Opening Hours</p>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>{siteSettings.openingHours}</p>
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    background: 'var(--gradient-secondary)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    📍
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--text-primary)' }}>Location</p>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)' }}>{siteSettings.address}</p>
+                  </div>
                 </div>
               </div>
             </div>
             
-            <div>
-              <Card className="bg-white/90 backdrop-blur-md border border-gray-200/50 rounded-3xl shadow-2xl overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                <CardHeader className="p-8">
-                  <CardTitle className="text-2xl font-bold text-gray-800">Időpont Foglalás</CardTitle>
-                  <CardDescription className="text-gray-600 text-lg">
-                    Foglaljon időpontot, hogy megismerje imádnivaló kiskutyáinkat
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-8 pt-0">
-                  <Button 
-                    className="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 rounded-xl py-4 text-lg"
-                    onClick={() => setShowBooking(true)}
-                  >
-                    <Phone className="w-5 h-5 mr-3" />
-                    Időpont Foglalása
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="card" style={{ padding: '2rem' }}>
+              <h3 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Book an Appointment</h3>
+              <p style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                Schedule a visit to meet our adorable puppies
+              </p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <a 
+                  href={`tel:${siteSettings.phoneNumber}`}
+                  className="btn btn-primary"
+                  style={{ textAlign: 'center', textDecoration: 'none', width: '100%' }}
+                >
+                  📞 Call Now!
+                </a>
+                
+                <button 
+                  className="btn btn-secondary"
+                  onClick={() => setShowBooking(true)}
+                  style={{ width: '100%' }}
+                >
+                  📅 Book Appointment
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+      <footer style={{
+        background: 'var(--background-dark)',
+        color: 'white',
+        padding: '3rem 0 1rem',
+        marginTop: '4rem'
+      }}>
+        <div className="container">
+          <div className="grid grid-3" style={{ gap: '2rem', marginBottom: '2rem' }}>
             <div>
-              <h3 className="text-2xl font-bold mb-4">{siteSettings.siteTitle}</h3>
-              <p className="text-gray-300 mb-4">{siteSettings.siteSubtitle}</p>
-              <p className="text-gray-400">{siteSettings.footerText}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  background: 'var(--gradient-primary)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.2rem'
+                }}>
+                  🐕
+                </div>
+                <h3 style={{ color: 'white', margin: 0 }}>{siteSettings.siteTitle}</h3>
+              </div>
+              <p style={{ color: 'rgba(255,255,255,0.8)' }}>{siteSettings.siteSubtitle}</p>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>{siteSettings.footerText}</p>
             </div>
+            
             <div>
-              <h4 className="text-lg font-semibold mb-4">Elérhetőség</h4>
-              <div className="space-y-2 text-gray-300">
-                <p>📞 {siteSettings.phoneNumber}</p>
-                <p>✉️ {siteSettings.email}</p>
-                <p>📍 {siteSettings.address}</p>
-                <p>🕒 {siteSettings.openingHours}</p>
+              <h4 style={{ color: 'white', marginBottom: '1rem' }}>Contact Info</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>📞 {siteSettings.phoneNumber}</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>✉️ {siteSettings.email}</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>📍 {siteSettings.address}</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>🕒 {siteSettings.openingHours}</p>
               </div>
             </div>
+            
             <div>
-              <h4 className="text-lg font-semibold mb-4">Közösségi média</h4>
-              <div className="space-y-2 text-gray-300">
-                <p>📱 WhatsApp: {siteSettings.whatsappNumber}</p>
-                <p>📷 Instagram: {siteSettings.instagramHandle}</p>
-                <p>👥 Facebook: {siteSettings.facebookPage}</p>
-              </div>
-              {/* Admin login button */}
-              <div className="mt-6">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAdminLogin(true)}
-                  className="text-gray-500 hover:text-gray-300 text-xs"
-                >
-                  Admin
-                </Button>
+              <h4 style={{ color: 'white', marginBottom: '1rem' }}>Social Media</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>📱 WhatsApp: {siteSettings.whatsappNumber}</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>📷 Instagram: {siteSettings.instagramHandle}</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0 }}>📘 Facebook: {siteSettings.facebookPage}</p>
               </div>
             </div>
+          </div>
+          
+          <div style={{ 
+            borderTop: '1px solid rgba(255,255,255,0.2)', 
+            paddingTop: '1rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem'
+          }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.9rem' }}>
+              {siteSettings.footerText}
+            </p>
+            <button 
+              onClick={() => setShowAdminLogin(true)}
+              style={{
+                background: 'rgba(255, 107, 53, 0.2)',
+                border: '1px solid rgba(255, 107, 53, 0.3)',
+                color: 'rgba(255, 107, 53, 0.8)',
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                fontSize: '0.8rem',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.background = 'rgba(255, 107, 53, 0.3)'
+                e.target.style.color = 'var(--primary-color)'
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'rgba(255, 107, 53, 0.2)'
+                e.target.style.color = 'rgba(255, 107, 53, 0.8)'
+              }}
+            >
+              Admin
+            </button>
           </div>
         </div>
       </footer>
 
+      {/* Modals and overlays would go here */}
+      {/* Dog Details Modal */}
+      {selectedDog && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000,
+          padding: '2rem'
+        }} onClick={() => setSelectedDog(null)}>
+          <div className="card" style={{
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '80vh',
+            overflow: 'auto'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{
+              width: '100%',
+              height: '300px',
+              borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden',
+              marginBottom: '1.5rem'
+            }}>
+              <img 
+                src={selectedDog.image} 
+                alt={selectedDog.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+              <h2 style={{ margin: 0 }}>{selectedDog.name}</h2>
+              <span style={{
+                background: 'var(--gradient-primary)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-full)',
+                fontWeight: 'bold',
+                fontSize: '1.1rem'
+              }}>
+                {selectedDog.price}
+              </span>
+            </div>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <p><strong>Breed:</strong> {selectedDog.breed}</p>
+              <p><strong>Age:</strong> {selectedDog.age}</p>
+              <p><strong>Gender:</strong> {selectedDog.gender}</p>
+              <p><strong>Weight:</strong> {selectedDog.weight}</p>
+              <p><strong>Parents:</strong> {selectedDog.parents}</p>
+              <p><strong>Temperament:</strong> {selectedDog.temperament}</p>
+              <p><strong>Description:</strong> {selectedDog.description}</p>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  setSelectedDog(null)
+                  setShowBooking(true)
+                }}
+                style={{ flex: 1 }}
+              >
+                Book Appointment
+              </button>
+              <button 
+                className="btn btn-outline"
+                onClick={() => setSelectedDog(null)}
+                style={{ flex: 1 }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Admin Login Modal */}
       {showAdminLogin && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md bg-white rounded-2xl shadow-2xl">
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold text-gray-800">Admin Bejelentkezés</CardTitle>
-              <CardDescription className="text-gray-600">
-                Adja meg az admin hozzáférési adatokat
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Felhasználónév
-                </label>
-                <input
-                  type="text"
-                  value={adminCredentials.username}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, username: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Felhasználónév"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Jelszó
-                </label>
-                <input
-                  type="password"
-                  value={adminCredentials.password}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Jelszó"
-                />
-              </div>
-              <div className="flex space-x-3 pt-4">
-                <Button
-                  onClick={handleAdminLogin}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl py-3"
-                >
-                  Bejelentkezés
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowAdminLogin(false)}
-                  className="flex-1 rounded-xl py-3"
-                >
-                  Mégse
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000
+        }}>
+          <div className="card" style={{ width: '400px' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: '2rem' }}>Admin Login</h3>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Username:</label>
+              <input
+                type="text"
+                value={adminCredentials.username}
+                onChange={(e) => setAdminCredentials({...adminCredentials, username: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '2rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Password:</label>
+              <input
+                type="password"
+                value={adminCredentials.password}
+                onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+            
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button 
+                className="btn btn-primary"
+                onClick={handleAdminLogin}
+                style={{ flex: 1 }}
+              >
+                Login
+              </button>
+              <button 
+                className="btn btn-outline"
+                onClick={() => setShowAdminLogin(false)}
+                style={{ flex: 1 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* Admin Panel */}
-      {showAdminPanel && isAdminLoggedIn && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
-            <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-t-2xl">
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
-                  <CardDescription className="text-orange-100">
-                    Teljes oldal szerkesztése és kezelése
-                  </CardDescription>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    onClick={handleSaveAndShare}
-                    disabled={isPublishing}
-                    className="bg-green-600 hover:bg-green-700 text-white rounded-xl"
-                  >
-                    {isPublishing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Mentés...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Mentés és Megosztás
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleAdminLogout}
-                    className="border-white/30 text-white hover:bg-white/20"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Kijelentkezés
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowAdminPanel(false)}
-                    className="border-white/30 text-white hover:bg-white/20"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Site Settings */}
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">Oldal Beállítások</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Oldal címe</label>
-                      <input
-                        type="text"
-                        value={siteSettings.siteTitle}
-                        onChange={(e) => setSiteSettings({...siteSettings, siteTitle: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Telefonszám</label>
-                      <input
-                        type="text"
-                        value={siteSettings.phoneNumber}
-                        onChange={(e) => setSiteSettings({...siteSettings, phoneNumber: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <input
-                        type="email"
-                        value={siteSettings.email}
-                        onChange={(e) => setSiteSettings({...siteSettings, email: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Dogs Management */}
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">Kutyák Kezelése</h3>
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-                    {dogs.map((dog, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-3">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-800">{dog.name}</h4>
-                            <p className="text-sm text-gray-600">{dog.breed} - {dog.price}</p>
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                const newPrice = prompt('Új ár:', dog.price)
-                                if (newPrice) {
-                                  const updatedDogs = [...dogs]
-                                  updatedDogs[index].price = newPrice
-                                  setDogs(updatedDogs)
-                                }
-                              }}
-                              className="text-xs"
-                            >
-                              <Edit className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                if (confirm('Biztosan törli ezt a kutyát?')) {
-                                  const updatedDogs = dogs.filter((_, i) => i !== index)
-                                  setDogs(updatedDogs)
-                                }
-                              }}
-                              className="text-xs text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bookings Management */}
-                <div className="space-y-4 md:col-span-2">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">Foglalások Kezelése</h3>
-                  <div className="grid md:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
-                    {bookings.map((booking, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-semibold text-gray-800">{booking.name}</h4>
-                            <p className="text-sm text-gray-600">{booking.email}</p>
-                            <p className="text-sm text-gray-600">{booking.phone}</p>
-                            <p className="text-sm text-gray-500">{booking.date} - {booking.time}</p>
-                            <p className="text-xs text-gray-500">{booking.message}</p>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              if (confirm('Biztosan törli ezt a foglalást?')) {
-                                const updatedBookings = bookings.filter((_, i) => i !== index)
-                                setBookings(updatedBookings)
-                              }
-                            }}
-                            className="text-xs text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Full Gallery Modal */}
-      {showFullGallery && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-7xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
-            <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-t-2xl">
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-3xl font-bold">Teljes Galéria</CardTitle>
-                  <CardDescription className="text-orange-100">
-                    Minden képünk egy helyen
-                  </CardDescription>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowFullGallery(false)}
-                  className="border-white/30 text-white hover:bg-white/20"
-                >
-                  <X className="w-6 h-6" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {galleryImages.map((image) => (
-                  <div 
-                    key={image.id} 
-                    className="group cursor-pointer"
-                    onClick={() => setSelectedGalleryImage(image)}
-                  >
-                    <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                      <img 
-                        src={image.src} 
-                        alt={image.title}
-                        className="w-full h-64 object-cover bg-gradient-to-br from-orange-50 to-amber-50 transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        <h4 className="text-lg font-bold mb-1">{image.title}</h4>
-                        <p className="text-sm opacity-75">{image.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      <style jsx>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-scroll {
-          animation: scroll 20s linear infinite;
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 1s ease-out;
-        }
-        
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
     </div>
   )
 }
